@@ -21,26 +21,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// certCmd represents the cert command
-var certCmd = &cobra.Command{
-	Use:   "cert",
-	Short: "Commands for requesting and fetching SSL certificates",
-	Long: ``,
+// requestCmd represents the request command
+var requestCmd = &cobra.Command{
+	Use:   "request [gcert server] [domain1] [domain 2] ...",
+	Args: cobra.MinimumNArgs(2),
+	Short: "Requests the gcert service to renew the given domain's certificate in Vault",
+	Long: `Sends a request to the gcert service, asking it to renew the SSL certificates in Vault for the given domains.
+It will return the paths to where the certificates were written to. You can use the fetch command to get the contents
+of a certificate or the write command to write all certificates to the local filesystem.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("cert called")
+		fmt.Println("request called")
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(certCmd)
+	certCmd.AddCommand(requestCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// certCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// requestCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// certCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// requestCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
