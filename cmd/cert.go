@@ -44,3 +44,7 @@ func init() {
 	// is called directly, e.g.:
 	// certCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
+
+func NewCertificateRequest(domains []string) {
+	
+}
