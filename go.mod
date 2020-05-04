@@ -7,7 +7,8 @@ require (
 	github.com/hashicorp/vault/api v1.0.5-0.20200317185738-82f498082f02
 	github.com/hashicorp/vault/sdk v0.1.14-0.20200429182704-29fce8f27ce4
 	github.com/jmgilman/gcert v0.1.0
-	github.com/jmgilman/vssh v0.1.2
+	github.com/jmgilman/vssh v0.1.2 // indirect
+	github.com/manifoldco/promptui v0.7.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.6.3
