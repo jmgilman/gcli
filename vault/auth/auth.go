@@ -3,7 +3,7 @@
 // adding additional forms of authentication not currently supported by the package.
 package auth
 
-//go:generate moq -out ../internal/mocks/authinterface.go -pkg mocks . Auth
+//go:generate moq -out ../../internal/mocks/authinterface.go -pkg mocks . Auth
 // Auth represents a form of authenticating with a Vault instance. See UserPassAuth for an example of how to properly
 // implement this interface.
 type Auth interface {
