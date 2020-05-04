@@ -17,13 +17,13 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
 // certCmd represents the cert command
 var certCmd = &cobra.Command{
 	Use:   "cert",
+	Args: cobra.MinimumNArgs(1),
 	Short: "Commands for requesting and fetching SSL certificates",
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -43,8 +43,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// certCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}
-
-func NewCertificateRequest(domains []string) {
-	
 }
