@@ -35,6 +35,16 @@ func NewDefaultClient() (*VaultClient, error) {
 	return NewClient(api.DefaultConfig())
 }
 
+// Write writes to the given data to the given paths and returns any generated secrets
+func (c *VaultClient) Write(path string, data map[string]interface{}) (*api.Secret, error) {
+	return c.api.Logical().Write(path, data)
+}
+
+// Read returns the secrets at the given path
+func (c *VaultClient) Read(path string) (*api.Secret, error) {
+	return c.api.Logical().Read(path)
+}
+
 // Login takes an authentication type along with its associated details and attempts to authenticate against the
 // configured Vault instance. If authentication is successful, the token returned from the Vault instance will be
 // automatically set to the underlying API client.
