@@ -2,8 +2,10 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/jmgilman/gcli/vault/auth"
 	"github.com/manifoldco/promptui"
+	"os"
 )
 
 //go:generate moq -out ../internal/mocks/prompterinterface.go -pkg mocks . Prompter
@@ -52,4 +54,10 @@ func GetAuthDetails(a auth.Auth, prompterFactory func(message string, hidden boo
 	}
 
 	return details, nil
+}
+
+//ErrorThenExit displays the given message and error then exits with an exit code of 1
+func ErrorThenExit(message string, err error) {
+	fmt.Println(message, ":", err)
+	os.Exit(1)
 }
