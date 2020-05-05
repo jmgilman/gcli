@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/hashicorp/vault/api"
 	"github.com/jmgilman/gcli/vault/auth"
+	"os"
+	"path/filepath"
 )
 
 // VaultClient is a small wrapper around the Vault API client. It provides additional functionality needed by vssh such
@@ -13,6 +15,11 @@ import (
 type VaultClient struct {
 	api *api.Client
 }
+
+const tokenFile = ".vault-token"
+
+// TokenReader is used to read tokens stored at ~/.vault-token
+type TokenReader func (path string) ([]byte, error)
 
 // NewClient returns a new VaultClient with the underlying API client configured with the given api.Config.
 func NewClient(c *api.Config) (*VaultClient, error) {
@@ -31,14 +38,30 @@ func NewClientWithAPI(c *api.Client) *VaultClient {
 }
 
 // NewDefaultClient returns a new VaultClient with the underlying API client configured with the Vault default values.
-func NewDefaultClient() (*VaultClient, error) {
-	return NewClient(api.DefaultConfig())
+func NewDefaultClient(tr TokenReader) (*VaultClient, error) {
+	vaultClient, err := NewClient(api.DefaultConfig())
+	if err != nil {
+		return &VaultClient{}, err
+	}
+
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return &VaultClient{}, err
+	}
+
+	contents, err := tr(filepath.Join(home, tokenFile))
+	if err != nil {
+		return &VaultClient{}, err
+	}
+
+	vaultClient.SetToken(string(contents))
+	return vaultClient, nil
 }
 
 // NewDefaultClientWithValues returns a new VaultClient with the underlying API client configured with the Vault default
 // values as well as the Vault server and token set to the given values.
-func NewDefaultClientWithValues(server string, token string) (*VaultClient, error) {
-	vaultClient, err := NewDefaultClient()
+func NewDefaultClientWithValues(server string, token string, tr TokenReader) (*VaultClient, error) {
+	vaultClient, err := NewDefaultClient(tr)
 	if err != nil {
 		return &VaultClient{}, err
 	}
@@ -162,4 +185,8 @@ func (c *VaultClient) Address() string {
 // Token returns the token configured for the underlying API client.
 func (c *VaultClient) Token() string {
 	return c.api.Token()
+}
+
+func (c *VaultClient) SetToken(token string) {
+	c.api.SetToken(token)
 }

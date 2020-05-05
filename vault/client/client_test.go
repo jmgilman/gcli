@@ -159,9 +159,12 @@ func (suite *ClientTestSuite) TestNewDefaultClient() {
 	if err := os.Setenv("VAULT_ADDR", "http://127.1.1:8200"); err != nil {
 		suite.T().Fatal(err)
 	}
-	vaultClient, err := client.NewDefaultClient()
+	vaultClient, err := client.NewDefaultClient(func(path string) ([]byte, error) {
+		return []byte("testing"), nil
+	})
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), vaultClient.Address(), "http://127.1.1:8200")
+	assert.Equal(suite.T(), vaultClient.Token(), "testing")
 }
 
 func (suite *ClientTestSuite) TestVaultClient_Login() {

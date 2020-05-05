@@ -21,7 +21,7 @@ var loginCmd = &cobra.Command{
 	Short: "Authenticates against Vault, retrieving a new token and persisting it to ~/.vault-token",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		vaultClient, err := client.NewDefaultClientWithValues(server, "")
+		vaultClient, err := client.NewDefaultClientWithValues(server, "", ioutil.ReadFile)
 		if err != nil {
 			ui.ErrorThenExit("Error creating Vault client", err)
 		}
