@@ -30,9 +30,24 @@ func NewClientWithAPI(c *api.Client) *VaultClient {
 	return &VaultClient{api: c}
 }
 
-// NewDefaultClient() returns a new VaultClient with the underlying API client configured with the Vault default values.
+// NewDefaultClient returns a new VaultClient with the underlying API client configured with the Vault default values.
 func NewDefaultClient() (*VaultClient, error) {
 	return NewClient(api.DefaultConfig())
+}
+
+// NewDefaultClientWithValues returns a new VaultClient with the underlying API client configured with the Vault default
+// values as well as the Vault server and token set to the given values.
+func NewDefaultClientWithValues(server string, token string) (*VaultClient, error) {
+	vaultClient, err := NewDefaultClient()
+	if err != nil {
+		return &VaultClient{}, err
+	}
+
+	if err := vaultClient.SetConfigValues(server, token); err != nil {
+		return &VaultClient{}, err
+	}
+
+	return vaultClient, nil
 }
 
 // Write writes to the given data to the given paths and returns any generated secrets

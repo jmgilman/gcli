@@ -58,6 +58,10 @@ func GetAuthDetails(a auth.Auth, prompterFactory func(message string, hidden boo
 
 //ErrorThenExit displays the given message and error then exits with an exit code of 1
 func ErrorThenExit(message string, err error) {
-	fmt.Println(message, ":", err)
+	if err != nil {
+		fmt.Println(message, ":", err)
+	} else {
+		fmt.Println(message)
+	}
 	os.Exit(1)
 }
