@@ -107,6 +107,13 @@ func (suite *ClientTestSuite) NewVaultServer() (net.Listener, *api.Client, [][]b
 		t.Fatal(err)
 	}
 
+	// Add some fake secrets
+	_, err = apiClient.Logical().Write("secret/test", map[string]interface{}{"key": "test"})
+	_, err = apiClient.Logical().Write("secret/test", map[string]interface{}{"key1": "test1"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	return ln, apiClient, keyShares
 }
 
@@ -165,6 +172,27 @@ func (suite *ClientTestSuite) TestNewDefaultClient() {
 	assert.Nil(suite.T(), err)
 	assert.Equal(suite.T(), vaultClient.Address(), "http://127.1.1:8200")
 	assert.Equal(suite.T(), vaultClient.Token(), "testing")
+}
+
+func (suite *ClientTestSuite) TestReadWrite() {
+	suite.apiClient.SetToken(suite.rootToken)
+	vaultClient := client.NewClientWithAPI(suite.apiClient)
+
+	_, err := vaultClient.Write("secret/test", map[string]interface{}{"key2": "test2"})
+	assert.Nil(suite.T(), err)
+
+	secret, err := vaultClient.Read("secret/test")
+	assert.Nil(suite.T(), err)
+	assert.Equal(suite.T(), secret.Data["key2"], "test2")
+}
+
+func (suite *ClientTestSuite) TestList() {
+	suite.apiClient.SetToken(suite.rootToken)
+	vaultClient := client.NewClientWithAPI(suite.apiClient)
+
+	result, err := vaultClient.List("secret")
+	assert.Nil(suite.T(), err)
+	assert.Contains(suite.T(), result, "test")
 }
 
 func (suite *ClientTestSuite) TestVaultClient_Login() {

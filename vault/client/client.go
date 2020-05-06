@@ -83,6 +83,30 @@ func (c *VaultClient) Read(path string) (*api.Secret, error) {
 	return c.api.Logical().Read(path)
 }
 
+// List returns a list of entries at the given path
+func (c *VaultClient) List(path string) ([]interface{}, error) {
+	secret, err := c.api.Logical().List(path)
+	if err != nil {
+		return []interface{}{}, err
+	}
+
+	if secret == nil || secret.Data == nil {
+		return []interface{}{}, fmt.Errorf("server did not return a secret")
+	}
+
+	k, ok := secret.Data["keys"]
+	if !ok || k == nil {
+		return []interface{}{}, fmt.Errorf("server returned no results")
+	}
+
+	i, ok := k.([]interface{})
+	if !ok {
+		return []interface{}{}, fmt.Errorf("could not parse list from server response")
+	}
+
+	return i, nil
+}
+
 // Login takes an authentication type along with its associated details and attempts to authenticate against the
 // configured Vault instance. If authentication is successful, the token returned from the Vault instance will be
 // automatically set to the underlying API client.
